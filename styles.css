@@ -2,37 +2,100 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: center;
-}
-.screen {
-  /* width: 1000px; */
-  /* height: 1000px; */
-  background-color: rgb(0, 0, 56);
-  justify-items: center;
   align-items: center;
-  padding: 0;
-  margin: 0;
+  width: 1280px;
+  height: 720px;
+}
+
+.screen {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   position: fixed;
 }
 
 .background {
   position: fixed;
+  width: 1280px;
+  height: 720px;
 }
 
-/* .row {
-  display: grid;
-  justify-items: center;
-  align-items: end;
+.gameover {
+  width: 640px;
+  height: 360px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  padding: 0;
+  margin: 0;
+  background-color: rgb(231, 225, 225);
+  border: solid;
+  border-width: 5px;
+  border-radius: 40px;
 }
 
-.platformcontainer {
-  width: 100%;
-  height: 100%;
-  padding: 0px;
-  margin: 0px;
-  display: grid;
-  position: relative;
+h1 {
+  font-size: 60px;
+  color: rgb(0, 0, 0);
+  /* position: absolute; */
+  text-align: center;
+  z-index: 1;
+  font-family: "Permanent Marker", cursive;
+  font-weight: 400;
+  font-style: normal;
+  margin: 0;
+  padding: 0;
 }
-*/
+
+.score {
+  font-size: 100px;
+  font-family: "Permanent Marker", cursive;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  z-index: 1;
+}
+
+.gameover-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.restart {
+  border-radius: 40px;
+  padding: 20px;
+  font-size: 20px;
+  background-color: black;
+  color: white;
+  font-family: "Permanent Marker", cursive;
+  font-weight: 400;
+  font-style: normal;
+  margin-right: 20px;
+  border: solid;
+  border-width: 5px;
+  border-color: black;
+}
+
+.cancel {
+  border-radius: 40px;
+  padding: 20px;
+  font-size: 20px;
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  font-family: "Permanent Marker", cursive;
+  font-weight: 400;
+  font-style: normal;
+  border: none;
+  border: solid;
+  border-width: 5px;
+}
 
 .platform {
   background-image: url("/assets/platform.png");
@@ -48,6 +111,7 @@ body {
   --doodle-left-image: url("/assets/doodler-left.png");
   --doodle-right-image: url("/assets/doodler-right.png");
   position: absolute;
+  z-index: 1;
 }
 
 .isJumping {
@@ -57,5 +121,34 @@ body {
 @keyframes jump {
   50% {
     top: 50%;
+  }
+}
+
+.isDeadFromJumping {
+  animation: drop 400ms;
+}
+
+@keyframes drop {
+  0% {
+    top: 60%;
+  }
+  50% {
+    top: 90%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+.isDeadFromWalking {
+  animation: fall 200ms;
+}
+
+@keyframes fall {
+  0% {
+    top: 99%;
+  }
+  90% {
+    top: 100%;
   }
 }
