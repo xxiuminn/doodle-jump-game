@@ -45,12 +45,7 @@ function gameOverMsg() {
 }
 
 function deadFromJumping() {
-  if (
-    character.classList.contains("isDeadFromJumping") ||
-    character.classList.contains("isDeadFromWalking")
-  ) {
-    return;
-  } else {
+  if (keys.right === true && keys.jump === true && keys.left === false) {
     character.classList.add("isDeadFromJumping");
     setTimeout(() => (character.style.top = String(screenHeight) + "px"), 400);
     setTimeout(() => character.remove(), 400);
@@ -59,17 +54,14 @@ function deadFromJumping() {
 }
 
 function deadFromWalking() {
-  if (
-    character.classList.contains("isDeadFromWalking") ||
-    character.classList.contains("isDeadFromJumping")
-  ) {
+  if (character.classList.contains("isDeadFromWalking")) {
     return;
-  } else {
-    character.classList.add("isDeadFromWalking");
-    setTimeout(() => (character.style.top = String(screenHeight) + "px"), 200);
-    setTimeout(() => character.remove(), 200);
-    gameOverMsg();
   }
+  console.log("dead");
+  character.classList.add("isDeadFromWalking");
+  setTimeout(() => (character.style.top = String(screenHeight) + "px"), 200);
+  setTimeout(() => character.remove(), 200);
+  gameOverMsg();
 }
 
 //creating platforms
@@ -92,43 +84,29 @@ character.style.left = String(parseInt(platformArr[6].style.left) + 14) + "px";
 let charLeft = parseInt(character.style.left);
 let charTop = parseInt(character.style.top);
 
-//jumps
-function isJump() {
-  if (character.classList.contains("isJumping")) {
-    return;
-  } else {
-    character.classList.add("isJumping");
-    // charTop = charTop + (screenHeight - screenHeight / (numOfPlat + 1));
-    charTop -= screenHeight / (numOfPlat + 1);
-    character.style.top = String(charTop) + "px";
-    setTimeout(drop, 600);
-    setTimeout(() => character.classList.remove("isJumping"), 600);
-  }
-}
-
-//character & platforms readjust positions
-function drop() {
-  score += 1;
-  displayScore();
-  setTimeout(stopScore, 500);
-  if (landed() === true) {
+// adjust screen & character down when the character jumps.
+function adjustScreen() {
+  const drop = setInterval((gravity) => {
     if (
-      parseInt(character.style.top) <
-      parseInt(platformArr[6].style.top) - 82
+      charTop < (screenHeight / (numOfPlat + 1)) * 7 - 92 &&
+      parseInt(platformArr[5].style.top) !==
+        screenHeight - screenHeight / (numOfPlat + 1)
     ) {
-      charTop = (screenHeight / (numOfPlat + 1)) * 7 - 82;
+      charTop += 1;
       character.style.top = String(charTop) + "px";
       for (let i = 0; i < numOfPlat; i++) {
-        let platTop =
-          parseInt(platformArr[i].style.top) + screenHeight / (numOfPlat + 1);
+        let platTop = parseInt(platformArr[i].style.top);
+        platTop += 1;
         platformArr[i].style.top = String(platTop) + "px";
       }
+    } else {
+      clearInterval(drop);
       removePlat();
       addPlat();
+      landed();
+      console.log("screen adjusted");
     }
-  } else {
-    deadFromJumping();
-  }
+  }, 1);
 }
 
 // //add platforms
@@ -151,60 +129,235 @@ function removePlat() {
 //check if character landed on the next platform
 function landed() {
   if (
-    parseInt(character.style.left) > parseInt(platformArr[5].style.left) - 92 &&
-    parseInt(character.style.left) < parseInt(platformArr[5].style.left) + 120
+    parseInt(character.style.left) > parseInt(platformArr[6].style.left) - 92 &&
+    parseInt(character.style.left) < parseInt(platformArr[6].style.left) + 120
   ) {
+    // score += 1;
+    // displayScore();
+    // setTimeout(stopScore, 500);
+    console.log("land");
     return true;
   } else {
-    return false;
+    console.log("dead");
+    deadFromWalking();
   }
 }
 
-//keyboard controls
-document.addEventListener("keydown", (e) => {
-  if (e.key == " ") {
-    isJump();
-  } else if (e.key === "ArrowRight") {
+let keys = { right: false, left: false, jump: false };
+
+document.addEventListener("keydown", (event) => {
+  console.log("Event keydown");
+  switch (event.key) {
+    case "ArrowRight":
+      keys.right = true;
+      break;
+    case "ArrowLeft":
+      keys.left = true;
+      break;
+    case " ":
+      keys.jump = true;
+      break;
+  }
+  console.log(keys);
+  if (keys.right === true && keys.jump === true && keys.left === false) {
+    console.log("jump right");
     moveRight();
-    document.querySelector(".character").style.backgroundImage =
-      "var(--doodle-right-image)";
-  } else if (e.key === "ArrowLeft") {
+    isJump();
+  } else if (keys.right === false && keys.jump === true && keys.left === true) {
+    console.log("jump left");
     moveLeft();
-    document.querySelector(".character").style.backgroundImage =
-      "var(--doodle-left-image)";
+    isJump();
+  } else if (
+    keys.right === false &&
+    keys.jump === true &&
+    keys.left === false
+  ) {
+    console.log("jump only");
+    isJump();
+  } else if (
+    keys.right === false &&
+    keys.jump === false &&
+    keys.left === true
+  ) {
+    moveLeft();
+  } else if (
+    keys.right === true &&
+    keys.jump === false &&
+    keys.left === false
+  ) {
+    moveRight();
   }
 });
 
-function moveRight() {
-  charLeft += 100;
-  character.style.left = String(charLeft) + "px";
-  if (
-    charLeft < parseInt(platformArr[6].style.left) - 120 ||
-    charLeft > parseInt(platformArr[6].style.left) + 120
-  ) {
-    deadFromWalking();
+let startLeft;
+let startRight;
+let keyLeftCount = 0;
+let keyRightCount = 0;
+
+document.addEventListener("keyup", (event) => {
+  switch (event.key) {
+    case "ArrowRight":
+      keys.right = false;
+      clearInterval(startRight);
+      keyRightCount = 0;
+      break;
+    case "ArrowLeft":
+      keys.left = false;
+      clearInterval(startLeft);
+      keyLeftCount = 0;
+      break;
+    case " ":
+      keys.jump = false;
+      break;
   }
-}
-function moveLeft() {
-  charLeft -= 100;
-  character.style.left = String(charLeft) + "px";
-  if (
-    charLeft < parseInt(platformArr[6].style.left) - 120 ||
-    charLeft > parseInt(platformArr[6].style.left) + 120
-  ) {
-    deadFromWalking();
+});
+
+//keyboard controls
+
+const moveLeft = () => {
+  document.querySelector(".character").style.backgroundImage =
+    "var(--doodle-left-image)";
+  if (keyLeftCount > 0) {
+    return;
+  } else {
+    startLeft = setInterval(() => {
+      keyLeftCount += 1;
+      charLeft -= 1;
+      character.style.left = String(charLeft) + "px";
+      landed();
+      // if (landed === false) {
+      //   deadFromWalking();
+      // }
+      // if (
+      //   charLeft < parseInt(platformArr[6].style.left) - 120 ||
+      //   charLeft > parseInt(platformArr[6].style.left) + 120
+      // ) {
+      //   console.log("die move left");
+      //   deadFromWalking();
+      // }
+    });
+  }
+};
+
+const moveRight = () => {
+  document.querySelector(".character").style.backgroundImage =
+    "var(--doodle-right-image)";
+  if (keyRightCount > 0) {
+    return;
+  } else {
+    startRight = setInterval(() => {
+      keyRightCount += 1;
+      charLeft += 1;
+      character.style.left = String(charLeft) + "px";
+      // if (landed === false) {
+      //   deadFromWalking();
+      // }
+      // if (
+      //   charLeft < parseInt(platformArr[6].style.left) - 120 ||
+      //   charLeft > parseInt(platformArr[6].style.left) + 120
+      // ) {
+      //   console.log("die move right");
+      //   deadFromWalking();
+      // }
+    });
+    landed();
+  }
+};
+
+//jumps
+function isJump() {
+  if (character.classList.contains("isJumping")) {
+    return;
+  } else {
+    character.classList.add("isJumping");
+    charTop -= screenHeight / (numOfPlat + 1);
+    character.style.top = String(charTop) + "px";
+    adjustScreen();
+    setTimeout(() => character.classList.remove("isJumping"), 400);
+    landed();
+    // if (
+    //   charLeft < parseInt(platformArr[5].style.left) - 120 ||
+    //   charLeft > parseInt(platformArr[5].style.left) + 120
+    // ) {
+    //   console.log("die is jumps");
+    //   deadFromWalking();
+    // }
   }
 }
 
-// setInterval((checkCharXPos) => {
-//   if (
-//     parseInt(character.style.left) >= nextPlatLeft / 10 &&
-//     parseInt(character.style.left) <= nextPlatLeft / 10 + 33
-//   ) {
-//     // console.log(true);
-//     return true;
-//   } else {
-//     return false;
-//     // console.log(false);
+const jumpLeft = () => {
+  document.querySelector(".character").style.backgroundImage =
+    "var(--doodle-left-image)";
+  if (character.classList.contains("isJumping")) {
+    return;
+  } else {
+    setInterval(() => {
+      charLeft -= 1;
+      character.style.left = String(charLeft) + "px";
+    }, 1);
+    character.classList.add("isJumping");
+    charTop -= screenHeight / (numOfPlat + 1);
+    character.style.top = String(charTop) + "px";
+    adjustScreen();
+    setTimeout(() => character.classList.remove("isJumping"), 400);
+  }
+  landed();
+};
+
+// const jumpRight = () => {
+//   document.querySelector(".character").style.backgroundImage =
+//     "var(--doodle-right-image)";
+// if (character.classList.contains("isJumping")) {
+//   console.log("hi");
+//   return;
+// } else {
+// character.classList.add("isJumping");
+// charTop -= screenHeight / (numOfPlat + 1);
+// character.style.top = String(charTop) + "px";
+// adjustScreen();
+// setTimeout(() => character.classList.remove("isJumping"), 400);
+// startRight = setInterval(() => {
+//   keyRightCount += 1;
+//   console.log("hi");
+//   charLeft += 1;
+//   character.style.left = String(charLeft) + "px";
+// });
+// };
+// charLeft += 100;
+// character.style.left = String(charLeft) + "px";
+// };
+
+// document.addEventListener("keydown", (e) => {
+//   if (e.key == " ") {
+//     isJump();
+//   } else if (e.key === "ArrowRight") {
+//     moveRight();
+//     document.querySelector(".character").style.backgroundImage =
+//       "var(--doodle-right-image)";
+//   } else if (e.key === "ArrowLeft") {
+//     moveLeft();
+//     document.querySelector(".character").style.backgroundImage =
+//       "var(--doodle-left-image)";
 //   }
-// }, 1000);
+// });
+
+// function moveRight() {
+//   charLeft += 5;
+//   character.style.left = String(charLeft) + "px";
+//   if (
+//     charLeft < parseInt(platformArr[6].style.left) - 120 ||
+//     charLeft > parseInt(platformArr[6].style.left) + 120
+//   ) {
+//     deadFromWalking();
+//   }
+// }
+// function moveLeft() {
+//   charLeft -= 5;
+//   character.style.left = String(charLeft) + "px";
+//   if (
+//     charLeft < parseInt(platformArr[6].style.left) - 120 ||
+//     charLeft > parseInt(platformArr[6].style.left) + 120
+//   ) {
+//     deadFromWalking();
+//   }
+// }

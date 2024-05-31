@@ -115,7 +115,7 @@ h1 {
 }
 
 .isJumping {
-  animation: jump 600ms;
+  animation: jump 400ms;
 }
 
 @keyframes jump {
