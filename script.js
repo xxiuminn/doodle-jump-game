@@ -1,68 +1,17 @@
 // definining initial state of screen
+let adjustedScreen = false;
 document.querySelector(".screen").style.width = "360px";
 const screenWidth = parseInt(document.querySelector(".screen").style.width);
 document.querySelector(".screen").style.height = "720px";
 const screenHeight = parseInt(document.querySelector(".screen").style.height);
 
-//score
+let haveLanded = false;
+let alive = true;
+let keys = { right: false, left: false, jump: false };
 let score = 0;
 let scoreNum = document.createElement("p");
 scoreNum.classList.add("score");
 document.querySelector(".screen").appendChild(scoreNum);
-
-function displayScore() {
-  document.querySelector(".score").style.display = "block";
-  scoreNum.innerText = String(score);
-}
-
-function stopScore() {
-  document.querySelector(".score").style.display = "none";
-}
-
-function gameOverMsg() {
-  //div to hold text & buttons
-  let gameover = document.createElement("div");
-  gameover.classList.add("gameover");
-  gameover.innerHTML = "<h1>It's Over.</h1>";
-  document.querySelector("body").appendChild(gameover);
-
-  //div to hold buttons
-  let gameoverButtons = document.createElement("div");
-  gameoverButtons.classList.add("gameover-buttons");
-  document.querySelector(".gameover").appendChild(gameoverButtons);
-
-  //restart button
-  let restart = document.createElement("button");
-  restart.classList.add("restart");
-  restart.innerText = "Play again";
-  document.querySelector(".gameover-buttons").appendChild(restart);
-
-  //cancel button
-  let cancel = document.createElement("button");
-  cancel.classList.add("cancel");
-  cancel.innerText = "Cancel";
-  document.querySelector(".gameover-buttons").appendChild(cancel);
-}
-
-function deadFromJumping() {
-  if (keys.right === true && keys.jump === true && keys.left === false) {
-    character.classList.add("isDeadFromJumping");
-    setTimeout(() => (character.style.top = String(screenHeight) + "px"), 400);
-    setTimeout(() => character.remove(), 400);
-    gameOverMsg();
-  }
-}
-
-function deadFromWalking() {
-  if (character.classList.contains("isDeadFromWalking")) {
-    return;
-  }
-  console.log("dead");
-  character.classList.add("isDeadFromWalking");
-  setTimeout(() => (character.style.top = String(screenHeight) + "px"), 200);
-  setTimeout(() => character.remove(), 200);
-  gameOverMsg();
-}
 
 //creating platforms
 let numOfPlat = 7;
@@ -79,34 +28,43 @@ for (let i = 0; i < numOfPlat; i++) {
 
 //creating character
 const character = document.querySelector(".character");
-character.style.top = String(parseInt(platformArr[6].style.top) - 82) + "px";
+character.style.top = String(parseInt(platformArr[6].style.top) - 92) + "px";
 character.style.left = String(parseInt(platformArr[6].style.left) + 14) + "px";
 let charLeft = parseInt(character.style.left);
 let charTop = parseInt(character.style.top);
 
 // adjust screen & character down when the character jumps.
 function adjustScreen() {
-  const drop = setInterval((gravity) => {
-    if (
-      charTop < (screenHeight / (numOfPlat + 1)) * 7 - 92 &&
-      parseInt(platformArr[5].style.top) !==
-        screenHeight - screenHeight / (numOfPlat + 1)
-    ) {
-      charTop += 1;
-      character.style.top = String(charTop) + "px";
-      for (let i = 0; i < numOfPlat; i++) {
-        let platTop = parseInt(platformArr[i].style.top);
-        platTop += 1;
-        platformArr[i].style.top = String(platTop) + "px";
+  if (alive === true) {
+    haveLanded = false;
+    adjustedScreen = true;
+    console.log("screen adjusting");
+    const drop = setInterval((gravity) => {
+      if (
+        charTop < (screenHeight / (numOfPlat + 1)) * 7 - 92 &&
+        parseInt(platformArr[5].style.top) !==
+          screenHeight - screenHeight / (numOfPlat + 1)
+      ) {
+        charTop += 1;
+        character.style.top = String(charTop) + "px";
+        for (let i = 0; i < numOfPlat; i++) {
+          let platTop = parseInt(platformArr[i].style.top);
+          platTop += 1;
+          platformArr[i].style.top = String(platTop) + "px";
+        }
+      } else {
+        clearInterval(drop);
+        removePlat();
+        addPlat();
+        adjustedScreen = false;
+        console.log("screen reset");
+        landed();
+        displayScore();
+        character.classList.remove("isJumping");
+        console.log("jumping removed");
       }
-    } else {
-      clearInterval(drop);
-      removePlat();
-      addPlat();
-      landed();
-      console.log("screen adjusted");
-    }
-  }, 1);
+    });
+  }
 }
 
 // //add platforms
@@ -117,6 +75,7 @@ function addPlat() {
   platform.style.top = String(screenHeight / (numOfPlat + 1)) + "px";
   platform.style.left = String(Math.random() * (screenWidth - 120)) + "px";
   platformArr.splice(0, 0, platform);
+  console.log("platform added");
 }
 
 //remove platforms
@@ -124,26 +83,67 @@ function removePlat() {
   platformArr.pop();
   let platform = document.querySelector(".platformcontainer");
   platform.removeChild(platform.lastElementChild);
+  console.log("platform removed");
 }
 
-//check if character landed on the next platform
+//check if character is dead
 function landed() {
   if (
-    parseInt(character.style.left) > parseInt(platformArr[6].style.left) - 92 &&
-    parseInt(character.style.left) < parseInt(platformArr[6].style.left) + 120
+    parseInt(character.style.top) ===
+    screenHeight - screenHeight / (numOfPlat + 1) - 92
   ) {
-    // score += 1;
-    // displayScore();
-    // setTimeout(stopScore, 500);
-    console.log("land");
-    return true;
+    if (
+      parseInt(character.style.left) >
+        parseInt(platformArr[6].style.left) - 92 &&
+      parseInt(character.style.left) < parseInt(platformArr[6].style.left) + 120
+    ) {
+      console.log("oh im alive");
+      haveLanded = true;
+      console.log(haveLanded);
+      // displayScore();
+    } else {
+      alive = false;
+      console.log(alive);
+      haveLanded = false;
+      console.log(haveLanded);
+      console.log("dead");
+      const die = setInterval(() => {
+        charTop += 1;
+        console.log(charTop);
+        character.style.top = String(charTop) + "px";
+        if (charTop > screenHeight) {
+          character.remove();
+          console.log("character cleared");
+          clearInterval(die);
+          console.log("interval cleared");
+        }
+      }, 1);
+    }
   } else {
-    console.log("dead");
-    deadFromWalking();
+    return;
   }
 }
 
-let keys = { right: false, left: false, jump: false };
+//score
+function displayScore() {
+  // keys.right === false &&
+  // keys.left === false &&
+  // keys.jump === false &&
+  if (haveLanded === true && character.classList.contains("isJumping")) {
+    console.log("score display");
+    score += 1;
+    document.querySelector(".score").style.display = "block";
+    scoreNum.innerText = String(score);
+    setTimeout(stopScore, 300);
+  }
+}
+
+function stopScore() {
+  document.querySelector(".score").style.display = "none";
+  console.log("stop");
+}
+
+//keyboard controls
 
 document.addEventListener("keydown", (event) => {
   console.log("Event keydown");
@@ -212,8 +212,6 @@ document.addEventListener("keyup", (event) => {
   }
 });
 
-//keyboard controls
-
 const moveLeft = () => {
   document.querySelector(".character").style.backgroundImage =
     "var(--doodle-left-image)";
@@ -222,19 +220,11 @@ const moveLeft = () => {
   } else {
     startLeft = setInterval(() => {
       keyLeftCount += 1;
-      charLeft -= 1;
+      charLeft -= 2;
       character.style.left = String(charLeft) + "px";
-      landed();
-      // if (landed === false) {
-      //   deadFromWalking();
-      // }
-      // if (
-      //   charLeft < parseInt(platformArr[6].style.left) - 120 ||
-      //   charLeft > parseInt(platformArr[6].style.left) + 120
-      // ) {
-      //   console.log("die move left");
-      //   deadFromWalking();
-      // }
+      if (adjustedScreen === false) {
+        landed();
+      }
     });
   }
 };
@@ -247,117 +237,60 @@ const moveRight = () => {
   } else {
     startRight = setInterval(() => {
       keyRightCount += 1;
-      charLeft += 1;
+      charLeft += 2;
       character.style.left = String(charLeft) + "px";
-      // if (landed === false) {
-      //   deadFromWalking();
-      // }
-      // if (
-      //   charLeft < parseInt(platformArr[6].style.left) - 120 ||
-      //   charLeft > parseInt(platformArr[6].style.left) + 120
-      // ) {
-      //   console.log("die move right");
-      //   deadFromWalking();
-      // }
+      // console.log("screen adjusted");
+      if (adjustedScreen === false) {
+        // console.log("screen not adjusted");
+        landed();
+      }
     });
-    landed();
   }
 };
 
 //jumps
 function isJump() {
-  if (character.classList.contains("isJumping")) {
+  if (character.classList.contains("isJumping") || alive === false) {
     return;
   } else {
     character.classList.add("isJumping");
+    console.log("is jumping");
     charTop -= screenHeight / (numOfPlat + 1);
     character.style.top = String(charTop) + "px";
     adjustScreen();
-    setTimeout(() => character.classList.remove("isJumping"), 400);
-    landed();
-    // if (
-    //   charLeft < parseInt(platformArr[5].style.left) - 120 ||
-    //   charLeft > parseInt(platformArr[5].style.left) + 120
-    // ) {
-    //   console.log("die is jumps");
-    //   deadFromWalking();
-    // }
+    // setTimeout(() => character.classList.remove("isJumping"), 400);
+    // console.log("jumping removed");
+    // displayScore();
   }
 }
 
-const jumpLeft = () => {
-  document.querySelector(".character").style.backgroundImage =
-    "var(--doodle-left-image)";
-  if (character.classList.contains("isJumping")) {
-    return;
-  } else {
-    setInterval(() => {
-      charLeft -= 1;
-      character.style.left = String(charLeft) + "px";
-    }, 1);
-    character.classList.add("isJumping");
-    charTop -= screenHeight / (numOfPlat + 1);
-    character.style.top = String(charTop) + "px";
-    adjustScreen();
-    setTimeout(() => character.classList.remove("isJumping"), 400);
-  }
-  landed();
-};
+// Game Over
 
-// const jumpRight = () => {
-//   document.querySelector(".character").style.backgroundImage =
-//     "var(--doodle-right-image)";
-// if (character.classList.contains("isJumping")) {
-//   console.log("hi");
-//   return;
-// } else {
-// character.classList.add("isJumping");
-// charTop -= screenHeight / (numOfPlat + 1);
-// character.style.top = String(charTop) + "px";
-// adjustScreen();
-// setTimeout(() => character.classList.remove("isJumping"), 400);
-// startRight = setInterval(() => {
-//   keyRightCount += 1;
-//   console.log("hi");
-//   charLeft += 1;
-//   character.style.left = String(charLeft) + "px";
-// });
-// };
-// charLeft += 100;
-// character.style.left = String(charLeft) + "px";
-// };
+if (alive === false) {
+  gameOverMsg();
+}
 
-// document.addEventListener("keydown", (e) => {
-//   if (e.key == " ") {
-//     isJump();
-//   } else if (e.key === "ArrowRight") {
-//     moveRight();
-//     document.querySelector(".character").style.backgroundImage =
-//       "var(--doodle-right-image)";
-//   } else if (e.key === "ArrowLeft") {
-//     moveLeft();
-//     document.querySelector(".character").style.backgroundImage =
-//       "var(--doodle-left-image)";
-//   }
-// });
+function gameOverMsg() {
+  //div to hold text & buttons
+  let gameover = document.createElement("div");
+  gameover.classList.add("gameover");
+  gameover.innerHTML = "<h1>It's Over.</h1>";
+  document.querySelector("body").appendChild(gameover);
 
-// function moveRight() {
-//   charLeft += 5;
-//   character.style.left = String(charLeft) + "px";
-//   if (
-//     charLeft < parseInt(platformArr[6].style.left) - 120 ||
-//     charLeft > parseInt(platformArr[6].style.left) + 120
-//   ) {
-//     deadFromWalking();
-//   }
-// }
-// function moveLeft() {
-//   charLeft -= 5;
-//   character.style.left = String(charLeft) + "px";
-//   if (
-//     charLeft < parseInt(platformArr[6].style.left) - 120 ||
-//     charLeft > parseInt(platformArr[6].style.left) + 120
-//   ) {
-//     deadFromWalking();
-//   }
-// }
+  //div to hold buttons
+  let gameoverButtons = document.createElement("div");
+  gameoverButtons.classList.add("gameover-buttons");
+  document.querySelector(".gameover").appendChild(gameoverButtons);
+
+  //restart button
+  let restart = document.createElement("button");
+  restart.classList.add("restart");
+  restart.innerText = "Play again";
+  document.querySelector(".gameover-buttons").appendChild(restart);
+
+  //cancel button
+  let cancel = document.createElement("button");
+  cancel.classList.add("cancel");
+  cancel.innerText = "Cancel";
+  document.querySelector(".gameover-buttons").appendChild(cancel);
+}
