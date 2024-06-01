@@ -7,11 +7,29 @@ const screenHeight = parseInt(document.querySelector(".screen").style.height);
 
 let haveLanded = false;
 let alive = true;
+let gameIsOver = false;
 let keys = { right: false, left: false, jump: false };
 let score = 0;
 let scoreNum = document.createElement("p");
 scoreNum.classList.add("score");
 document.querySelector(".screen").appendChild(scoreNum);
+
+startGame();
+
+//start game screen
+function startGame() {
+  //div to hold text & buttons
+  let start = document.createElement("div");
+  start.classList.add("start");
+  start.innerHTML = "<h1>Start Game</h1>";
+  document.querySelector("body").appendChild(start);
+  //play button
+  let play = document.createElement("button");
+  play.classList.add("start-button");
+  play.innerText = "Play";
+  document.querySelector(".start").appendChild(play);
+  document.querySelector(".start-button").addEventListener("click", pressPlay);
+}
 
 //creating platforms
 let numOfPlat = 7;
@@ -103,6 +121,9 @@ function landed() {
       // displayScore();
     } else {
       alive = false;
+      if (gameIsOver === false) {
+        gameOverMsg();
+      }
       console.log(alive);
       haveLanded = false;
       console.log(haveLanded);
@@ -112,7 +133,8 @@ function landed() {
         console.log(charTop);
         character.style.top = String(charTop) + "px";
         if (charTop > screenHeight) {
-          character.remove();
+          // character.remove();
+          character.style.display = "none";
           console.log("character cleared");
           clearInterval(die);
           console.log("interval cleared");
@@ -145,49 +167,59 @@ function stopScore() {
 
 //keyboard controls
 
-document.addEventListener("keydown", (event) => {
-  console.log("Event keydown");
-  switch (event.key) {
-    case "ArrowRight":
-      keys.right = true;
-      break;
-    case "ArrowLeft":
-      keys.left = true;
-      break;
-    case " ":
-      keys.jump = true;
-      break;
-  }
-  console.log(keys);
-  if (keys.right === true && keys.jump === true && keys.left === false) {
-    console.log("jump right");
-    moveRight();
-    isJump();
-  } else if (keys.right === false && keys.jump === true && keys.left === true) {
-    console.log("jump left");
-    moveLeft();
-    isJump();
-  } else if (
-    keys.right === false &&
-    keys.jump === true &&
-    keys.left === false
-  ) {
-    console.log("jump only");
-    isJump();
-  } else if (
-    keys.right === false &&
-    keys.jump === false &&
-    keys.left === true
-  ) {
-    moveLeft();
-  } else if (
-    keys.right === true &&
-    keys.jump === false &&
-    keys.left === false
-  ) {
-    moveRight();
-  }
-});
+function pressPlay() {
+  document.querySelector("div.start").remove();
+  // startGame = true;
+
+  document.addEventListener("keydown", (event) => {
+    console.log("Event keydown");
+    switch (event.key) {
+      case "ArrowRight":
+        keys.right = true;
+        break;
+      case "ArrowLeft":
+        keys.left = true;
+        break;
+      case " ":
+        keys.jump = true;
+        break;
+    }
+    console.log(keys);
+
+    if (keys.right === true && keys.jump === true && keys.left === false) {
+      console.log("jump right");
+      moveRight();
+      isJump();
+    } else if (
+      keys.right === false &&
+      keys.jump === true &&
+      keys.left === true
+    ) {
+      console.log("jump left");
+      moveLeft();
+      isJump();
+    } else if (
+      keys.right === false &&
+      keys.jump === true &&
+      keys.left === false
+    ) {
+      console.log("jump only");
+      isJump();
+    } else if (
+      keys.right === false &&
+      keys.jump === false &&
+      keys.left === true
+    ) {
+      moveLeft();
+    } else if (
+      keys.right === true &&
+      keys.jump === false &&
+      keys.left === false
+    ) {
+      moveRight();
+    }
+  });
+}
 
 let startLeft;
 let startRight;
@@ -265,16 +297,12 @@ function isJump() {
 }
 
 // Game Over
-
-if (alive === false) {
-  gameOverMsg();
-}
-
 function gameOverMsg() {
+  gameIsOver = true;
   //div to hold text & buttons
   let gameover = document.createElement("div");
   gameover.classList.add("gameover");
-  gameover.innerHTML = "<h1>It's Over.</h1>";
+  gameover.innerHTML = `<h1>Your Highscore <br> ${score}</h1>`;
   document.querySelector("body").appendChild(gameover);
 
   //div to hold buttons
@@ -287,10 +315,28 @@ function gameOverMsg() {
   restart.classList.add("restart");
   restart.innerText = "Play again";
   document.querySelector(".gameover-buttons").appendChild(restart);
-
-  //cancel button
-  let cancel = document.createElement("button");
-  cancel.classList.add("cancel");
-  cancel.innerText = "Cancel";
-  document.querySelector(".gameover-buttons").appendChild(cancel);
+  document.querySelector(".restart").addEventListener("click", replayGame);
 }
+//   //cancel button
+//   let cancel = document.createElement("button");
+//   cancel.classList.add("cancel");
+//   cancel.innerText = "Cancel";
+//   document.querySelector(".gameover-buttons").appendChild(cancel);
+//   document.querySelector(".cancel").addEventListener("click", replayGame);
+
+function replayGame() {
+  location.reload();
+}
+
+// function playAgain() {
+//   document.querySelector("div.gameover").remove();
+//   character.style.display = "block";
+//   character.style.top = String(parseInt(platformArr[6].style.top) - 92) + "px";
+//   character.style.left =
+//     String(parseInt(platformArr[6].style.left) + 14) + "px";
+//   let charLeft = parseInt(character.style.left);
+//   let charTop = parseInt(character.style.top);
+//   alive = true;
+//   gameIsOver = false;
+//   pressPlay
+// }
