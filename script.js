@@ -1,5 +1,5 @@
 // definining initial state of screen
-let adjustedScreen = false;
+let adjustingScreen = false;
 document.querySelector(".screen").style.width = "360px";
 const screenWidth = parseInt(document.querySelector(".screen").style.width);
 document.querySelector(".screen").style.height = "720px";
@@ -30,9 +30,8 @@ function gameOverAudio() {
   audio.play();
 }
 
-startGame();
-
 //start game screen
+startGame();
 function startGame() {
   //div to hold text & buttons
   let start = document.createElement("div");
@@ -45,7 +44,7 @@ function startGame() {
   play.innerText = "Play";
   document.querySelector(".start").appendChild(play);
   document.querySelector(".start-button").addEventListener("click", pressPlay);
-
+  // how to play instructions
   let read = document.createElement("p");
   read.classList.add("read-rules");
   read.innerText = "How to play?";
@@ -69,9 +68,7 @@ function startGame() {
   document.querySelector(".start-button").addEventListener("click", bgAudio);
 }
 
-//how to play
-
-//instructions
+//instructions screen
 function instructions() {
   let instructions = document.createElement("div");
   instructions.classList.add("instructions");
@@ -130,7 +127,7 @@ let charTop = parseInt(character.style.top);
 function adjustScreen() {
   if (alive === true) {
     haveLanded = false;
-    adjustedScreen = true;
+    adjustingScreen = true;
     console.log("screen adjusting");
     const drop = setInterval((gravity) => {
       if (
@@ -149,12 +146,12 @@ function adjustScreen() {
         clearInterval(drop);
         removePlat();
         addPlat();
-        adjustedScreen = false;
-        console.log("screen reset");
+        adjustingScreen = false;
+        //screen has officially resetted
         landed();
         displayScore();
         character.classList.remove("isJumping");
-        console.log("jumping removed");
+        //jumping removed
       }
     });
   }
@@ -168,7 +165,6 @@ function addPlat() {
   platform.style.top = String(screenHeight / (numOfPlat + 1)) + "px";
   platform.style.left = String(Math.random() * (screenWidth - 120)) + "px";
   platformArr.splice(0, 0, platform);
-  console.log("platform added");
 }
 
 //remove platforms
@@ -176,7 +172,6 @@ function removePlat() {
   platformArr.pop();
   let platform = document.querySelector(".platformcontainer");
   platform.removeChild(platform.lastElementChild);
-  console.log("platform removed");
 }
 
 //check if character is dead
@@ -190,30 +185,27 @@ function landed() {
         parseInt(platformArr[6].style.left) - 92 &&
       parseInt(character.style.left) < parseInt(platformArr[6].style.left) + 120
     ) {
-      console.log("oh im alive");
+      //if character survives
       haveLanded = true;
       console.log(haveLanded);
-      // displayScore();
     } else {
+      //character dies
       alive = false;
       if (gameIsOver === false) {
         gameOverMsg();
         gameOverAudio();
       }
-      console.log(alive);
       haveLanded = false;
-      console.log(haveLanded);
-      console.log("dead");
+      //character falls
       const die = setInterval(() => {
         charTop += 1;
         console.log(charTop);
         character.style.top = String(charTop) + "px";
         if (charTop > screenHeight) {
-          // character.remove();
+          //remove character from screen
           character.style.display = "none";
-          console.log("character cleared");
+          //remove the fall animation
           clearInterval(die);
-          console.log("interval cleared");
         }
       }, 1);
     }
@@ -224,11 +216,8 @@ function landed() {
 
 //score
 function displayScore() {
-  // keys.right === false &&
-  // keys.left === false &&
-  // keys.jump === false &&
+  //it must have landed to be successful, but haveLanded will also be triggered if it's just moving left and right on its current platform so I added that it must be triggered by a jump.
   if (haveLanded === true && character.classList.contains("isJumping")) {
-    console.log("score display");
     score += 1;
     document.querySelector(".score").style.display = "block";
     scoreNum.innerText = String(score);
@@ -238,14 +227,11 @@ function displayScore() {
 
 function stopScore() {
   document.querySelector(".score").style.display = "none";
-  console.log("stop");
 }
 
 //keyboard controls
-
 function pressPlay() {
   document.querySelector("div.start").remove();
-  // startGame = true;
 
   document.addEventListener("keydown", (event) => {
     console.log("Event keydown");
@@ -330,7 +316,7 @@ const moveLeft = () => {
       keyLeftCount += 1;
       charLeft -= 2;
       character.style.left = String(charLeft) + "px";
-      if (adjustedScreen === false) {
+      if (adjustingScreen === false) {
         landed();
       }
     });
@@ -347,9 +333,7 @@ const moveRight = () => {
       keyRightCount += 1;
       charLeft += 2;
       character.style.left = String(charLeft) + "px";
-      // console.log("screen adjusted");
-      if (adjustedScreen === false) {
-        // console.log("screen not adjusted");
+      if (adjustingScreen === false) {
         landed();
       }
     });
@@ -366,9 +350,6 @@ function isJump() {
     charTop -= screenHeight / (numOfPlat + 1);
     character.style.top = String(charTop) + "px";
     adjustScreen();
-    // setTimeout(() => character.classList.remove("isJumping"), 400);
-    // console.log("jumping removed");
-    // displayScore();
   }
 }
 
@@ -393,26 +374,7 @@ function gameOverMsg() {
   document.querySelector(".gameover-buttons").appendChild(restart);
   document.querySelector(".restart").addEventListener("click", replayGame);
 }
-//   //cancel button
-//   let cancel = document.createElement("button");
-//   cancel.classList.add("cancel");
-//   cancel.innerText = "Cancel";
-//   document.querySelector(".gameover-buttons").appendChild(cancel);
-//   document.querySelector(".cancel").addEventListener("click", replayGame);
 
 function replayGame() {
   location.reload();
 }
-
-// function playAgain() {
-//   document.querySelector("div.gameover").remove();
-//   character.style.display = "block";
-//   character.style.top = String(parseInt(platformArr[6].style.top) - 92) + "px";
-//   character.style.left =
-//     String(parseInt(platformArr[6].style.left) + 14) + "px";
-//   let charLeft = parseInt(character.style.left);
-//   let charTop = parseInt(character.style.top);
-//   alive = true;
-//   gameIsOver = false;
-//   pressPlay
-// }
