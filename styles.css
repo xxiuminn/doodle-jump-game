@@ -1,10 +1,24 @@
 body {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  align-content: center;
+  /* width: 1280px;
+  height: 720px; */
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  /* align-self: center; */
+  /* display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
   width: 1280px;
-  height: 720px;
+  height: 720px; */
 }
 
 .screen {
@@ -12,18 +26,15 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  position: fixed;
-}
-
-.background {
-  position: fixed;
-  width: 1280px;
-  height: 720px;
+  position: absolute;
+  top: 0;
+  /* position: fixed;
+  top: 0; */
 }
 
 .start {
-  width: 640px;
-  height: 360px;
+  width: 352px;
+  height: 361px;
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -32,31 +43,97 @@ body {
   align-content: center;
   padding: 0;
   margin: 0;
-  background-color: rgb(231, 225, 225);
-  border: solid;
-  border-width: 5px;
-  border-radius: 40px;
+  background-image: url("/assets/post-it-3.png");
+  object-fit: contain;
+  font-size: 1rem;
 }
 
 .start-button {
   border-radius: 40px;
   padding: 20px;
-  font-size: 20px;
+  font-size: 1rem;
   background-color: black;
   color: white;
-  font-family: "Permanent Marker", cursive;
-  font-weight: 400;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
   font-style: normal;
   margin-top: 50px;
-  border: solid;
   border-width: 5px;
-  border-color: black;
   width: 200px;
+  border: none;
+}
+
+.start-button:hover {
+  font-size: 1rem;
+  background-color: #f3d223;
+  color: #000000;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  margin-top: 50px;
+  border-width: 5px;
+  width: 200px;
+  border: none;
+}
+
+.instructions {
+  width: 352px;
+  height: 361px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: center;
+  padding: 0;
+  margin: 0;
+  background-image: url("/assets/post-it-3.png");
+  object-fit: contain;
+  font-size: 1rem;
+}
+
+.div1 {
+  padding-top: 3rem;
+  padding-left: 3rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  align-content: center;
+}
+
+.return {
+  width: 25%;
+  background-color: black;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.return:hover {
+  background-color: #f3d223;
+  color: #000000;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.div2 {
+  text-align: center;
+  z-index: 1;
+  font-family: "Schoolbell", cursive;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .gameover {
-  width: 640px;
-  height: 360px;
+  width: 352px;
+  height: 361px;
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -65,28 +142,40 @@ body {
   align-content: center;
   padding: 0;
   margin: 0;
-  background-color: rgb(231, 225, 225);
-  border: solid;
-  border-width: 5px;
-  border-radius: 40px;
+  background-image: url("/assets/post-it-3.png");
+  object-fit: contain;
 }
 
 h1 {
-  font-size: 60px;
+  font-size: 3rem;
   color: rgb(0, 0, 0);
   /* position: absolute; */
   text-align: center;
   z-index: 1;
-  font-family: "Permanent Marker", cursive;
+  font-family: "Schoolbell", cursive;
   font-weight: 400;
   font-style: normal;
   margin: 0;
   padding: 0;
 }
 
+.read-rules {
+  font-size: 1rem;
+  color: rgb(0, 0, 0);
+  z-index: 1;
+  font-family: "Schoolbell", cursive;
+  font-weight: 400;
+  font-style: normal;
+  text-decoration: underline;
+}
+
+.read-rules:hover {
+  color: green;
+}
+
 .score {
-  font-size: 100px;
-  font-family: "Permanent Marker", cursive;
+  font-size: 3rem;
+  font-family: "Schoolbell", cursive;
   font-weight: 400;
   font-style: normal;
   text-align: center;
@@ -94,27 +183,40 @@ h1 {
   display: none;
 }
 
-.gameover-buttons {
+/* .gameover-buttons {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   margin-top: 50px;
-}
+} */
 
 .restart {
   border-radius: 40px;
   padding: 20px;
-  font-size: 20px;
+  font-size: 1rem;
   background-color: black;
   color: white;
-  font-family: "Permanent Marker", cursive;
-  font-weight: 400;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
   font-style: normal;
-  margin-right: 20px;
-  border: solid;
+  margin-top: 50px;
   border-width: 5px;
-  border-color: black;
+  width: 200px;
+  border: none;
+}
+
+.restart:hover {
+  font-size: 1rem;
+  background-color: #f3d223;
+  color: #000000;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  margin-top: 50px;
+  border-width: 5px;
+  width: 200px;
+  border: none;
 }
 
 /* .replay {

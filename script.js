@@ -14,6 +14,22 @@ let scoreNum = document.createElement("p");
 scoreNum.classList.add("score");
 document.querySelector(".screen").appendChild(scoreNum);
 
+//soundtrack
+function jumpAudio() {
+  let audio = new Audio("/assets/jump.mp3");
+  audio.play();
+}
+document.addEventListener("keydown", (event) => {
+  if (event.key === " ") {
+    jumpAudio();
+  }
+});
+
+function gameOverAudio() {
+  let audio = new Audio("/assets/gameover.mp3");
+  audio.play();
+}
+
 startGame();
 
 //start game screen
@@ -22,13 +38,72 @@ function startGame() {
   let start = document.createElement("div");
   start.classList.add("start");
   start.innerHTML = "<h1>Start Game</h1>";
-  document.querySelector("body").appendChild(start);
+  document.querySelector(".screen").appendChild(start);
   //play button
   let play = document.createElement("button");
   play.classList.add("start-button");
   play.innerText = "Play";
   document.querySelector(".start").appendChild(play);
   document.querySelector(".start-button").addEventListener("click", pressPlay);
+
+  let read = document.createElement("p");
+  read.classList.add("read-rules");
+  read.innerText = "How to play?";
+  document.querySelector(".start").appendChild(read);
+  document.querySelector(".start-button").addEventListener("click", pressPlay);
+  document.querySelector(".read-rules").addEventListener("click", () => {
+    document.querySelector(".start").style.display = "none";
+    instructions();
+  });
+
+  function clickAudio() {
+    let audio = new Audio("/assets/click.mp3");
+    audio.play();
+  }
+  document.querySelector(".start-button").addEventListener("click", clickAudio);
+
+  function bgAudio() {
+    let audio = new Audio("/assets/bgmusic.mp3");
+    audio.play();
+  }
+  document.querySelector(".start-button").addEventListener("click", bgAudio);
+}
+
+//how to play
+
+//instructions
+function instructions() {
+  let instructions = document.createElement("div");
+  instructions.classList.add("instructions");
+  document.querySelector(".screen").appendChild(instructions);
+  //div1
+  let div1 = document.createElement("div");
+  div1.classList.add("div1");
+  document.querySelector(".instructions").appendChild(div1);
+
+  //return button
+  let returnButton = document.createElement("button");
+  returnButton.classList.add("return");
+  returnButton.innerText = "< Return";
+  document.querySelector(".div1").appendChild(returnButton);
+  document.querySelector(".return").addEventListener("click", () => {
+    document.querySelector(".instructions").remove();
+    document.querySelector(".start").style.display = "flex";
+  });
+
+  //div2
+  let div2 = document.createElement("div");
+  div2.classList.add("div2");
+  document.querySelector(".instructions").appendChild(div2);
+  div2.innerHTML = `<h1>How to play?</h1>
+  <p>spacebar = jump <br />
+  left key = move left <br />
+  right key = move right <br />
+  <br />
+  Each successful jump earns you 1 point. <br />
+  Game is over once you fall.
+  </p>
+  `;
 }
 
 //creating platforms
@@ -123,6 +198,7 @@ function landed() {
       alive = false;
       if (gameIsOver === false) {
         gameOverMsg();
+        gameOverAudio();
       }
       console.log(alive);
       haveLanded = false;
@@ -302,8 +378,8 @@ function gameOverMsg() {
   //div to hold text & buttons
   let gameover = document.createElement("div");
   gameover.classList.add("gameover");
-  gameover.innerHTML = `<h1>Your Highscore <br> ${score}</h1>`;
-  document.querySelector("body").appendChild(gameover);
+  gameover.innerHTML = `<h1>Highscore <br> ${score}</h1>`;
+  document.querySelector(".screen").appendChild(gameover);
 
   //div to hold buttons
   let gameoverButtons = document.createElement("div");
