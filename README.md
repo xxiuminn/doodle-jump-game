@@ -4,7 +4,7 @@
 
 Inspired by the classic Doodle Jump, this platformer game challenges players to leap from platform to platform in an endless ascent, all while avoiding a fall. However, unlike the original, my version gives players full control over each jump and restricts players from falling back onto previous platforms, introducing a new level of skill and challenge.
 
-<img src = "readme/doodle-jump-demo.gif" width = "1200">
+<img src = "readme/doodle-jump-demo.gif" width = "500">
 <a href="https://xxiuminn.github.io/doodle-jump/">Click here to try out my version of the game!</a>
 
 ## Technologies Used
