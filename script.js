@@ -16,7 +16,7 @@ document.querySelector(".screen").appendChild(scoreNum);
 
 //soundtrack
 function jumpAudio() {
-  let audio = new Audio("/assets/jump.mp3");
+  let audio = new Audio("assets/jump.mp3");
   audio.play();
 }
 document.addEventListener("keydown", (event) => {
@@ -26,7 +26,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 function gameOverAudio() {
-  let audio = new Audio("/assets/gameover.mp3");
+  let audio = new Audio("assets/gameover.mp3");
   audio.play();
 }
 
@@ -56,13 +56,13 @@ function startGame() {
   });
 
   function clickAudio() {
-    let audio = new Audio("/assets/click.mp3");
+    let audio = new Audio("assets/click.mp3");
     audio.play();
   }
   document.querySelector(".start-button").addEventListener("click", clickAudio);
 
   function bgAudio() {
-    let audio = new Audio("/assets/bgmusic.mp3");
+    let audio = new Audio("assets/bgmusic.mp3");
     audio.play();
   }
   document.querySelector(".start-button").addEventListener("click", bgAudio);

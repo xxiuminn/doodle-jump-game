@@ -43,7 +43,7 @@ body {
   align-content: center;
   padding: 0;
   margin: 0;
-  background-image: url("/assets/post-it-3.png");
+  background-image: url("assets/post-it-3.png");
   object-fit: contain;
   font-size: 1rem;
 }
@@ -87,7 +87,7 @@ body {
   align-content: center;
   padding: 0;
   margin: 0;
-  background-image: url("/assets/post-it-3.png");
+  background-image: url("assets/post-it-3.png");
   object-fit: contain;
   font-size: 1rem;
 }
@@ -142,7 +142,7 @@ body {
   align-content: center;
   padding: 0;
   margin: 0;
-  background-image: url("/assets/post-it-3.png");
+  background-image: url("assets/post-it-3.png");
   object-fit: contain;
 }
 
@@ -234,7 +234,7 @@ h1 {
 } */
 
 .platform {
-  background-image: url("/assets/platform.png");
+  background-image: url("assets/platform.png");
   width: 120px;
   height: 36px;
   position: absolute;
@@ -243,9 +243,9 @@ h1 {
 .character {
   width: 92px;
   height: 92px;
-  background-image: url("/assets/doodler-right.png");
-  --doodle-left-image: url("/assets/doodler-left.png");
-  --doodle-right-image: url("/assets/doodler-right.png");
+  background-image: url("assets/doodler-right.png");
+  --doodle-left-image: url("assets/doodler-left.png");
+  --doodle-right-image: url("assets/doodler-right.png");
   position: absolute;
   z-index: 1;
 }
