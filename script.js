@@ -157,7 +157,7 @@ function adjustScreen() {
   }
 }
 
-// //add platforms
+//add platforms
 function addPlat() {
   const platform = document.createElement("div");
   document.querySelector(".platformcontainer").prepend(platform);

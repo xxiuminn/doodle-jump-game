@@ -1,4 +1,4 @@
-# Doodle Jump (Same same but different)
+# Doodle Jump Using Vanilla JS
 
 ## About The Game
 
@@ -138,6 +138,8 @@ function removePlat() {
 
 ## Determining If Player Landed
 
+A reliable method to determine if a player has landed is by checking their position. Once the player jumps and reaches the preset height, we will check their x-axis position (determined by the left position) and compare it to the new platform's position where the player is supposed to land. If the player's position falls within the platform's width, they have successfully landed; if not, they have failed.
+
 ```
 if (
     parseInt(character.style.top) ===
@@ -171,6 +173,17 @@ const die = setInterval(() => {
       }, 1);
 ```
 
-## Future Updates
+## Future Developments
+
+- Introduce multiple levels featuring moving platforms.
+- Incorporate broken platforms and various elements on the platforms that will deduct points and reduce lives if the player collides with them.
 
 ## Credits
+
+- Soundtracks from uppbeat:
+  - https://uppbeat.io/t/color-parade/pixel-playground
+  - Mouth pop - single loud
+  - Whoosh & ding
+- Assets
+  - Doodle's left, right profile and platform images from https://github.com/ImKennyYip/doodle-jump/blob/master/doodler-left.png
+  - Background image for starting, game and gameover screen from freepik.com
