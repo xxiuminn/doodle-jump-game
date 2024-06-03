@@ -224,32 +224,3 @@ h1 {
     top: 50%;
   }
 }
-
-.isDeadFromJumping {
-  animation: drop 400ms;
-}
-
-@keyframes drop {
-  0% {
-    top: 60%;
-  }
-  50% {
-    top: 90%;
-  }
-  100% {
-    top: 100%;
-  }
-}
-
-.isDeadFromWalking {
-  animation: fall 200ms;
-}
-
-@keyframes fall {
-  0% {
-    top: 99%;
-  }
-  90% {
-    top: 100%;
-  }
-}
