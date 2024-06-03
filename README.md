@@ -53,8 +53,6 @@ To address this, I need to have an addEventListener for keyup events as well, an
 
 When holding down the left or right key, one would naturally expect the character to move continuously, as is common in most games.However, another limitation of using addEventListener is that one press equates to one trigger, so the player can only move the set distance for that single press. Holding the key longer would not result in additional movement.
 
-### Methods Used:
-
 To achieve smooth left and right movements and allow the character to continue moving when the key is held down, I use a setInterval to repeatedly check if the key remains pressed and clearInterval when the key is released.
 
 ```
@@ -76,7 +74,7 @@ document.addEventListener("keyup", (event) =>
 });
 ```
 
-### For Jumps only:
+### For Jumps:
 
 The actual height of the jump holds little significance; what truly counts is where the player lands after executing the jump. Consequently, I opted for CSS keyframes to animate the upward motion, as I do not need to precisely track the player's position while ascending. I positioned the apex of the jump at the midpoint of the frame's height, albeit this detail is relatively inconsequential.
 
@@ -93,6 +91,8 @@ A challenge with CSS keyframes is that once the animation reaches 100%, the play
   }
 }
 ```
+
+## Landing Animation
 
 To manage the downward movement of the jump, I intervened the CSS animation and implemented another setInterval to override the descent animation. This allowed me to preset the player's final position after each jump.
 
@@ -113,6 +113,64 @@ const drop = setInterval((gravity) => {
       }})
 ```
 
+After the player successfully jumps onto the next platform, we need to shift the platforms downward. This will remove the previous platform the player was on and make room for new platforms to appear from the top.
+
+```
+//add platforms
+function addPlat() {
+  const platform = document.createElement("div");
+  document.querySelector(".platformcontainer").prepend(platform);
+  platform.classList.add("platform");
+  platform.style.top = String(screenHeight / (numOfPlat + 1)) + "px";
+  platform.style.left = String(Math.random() * (screenWidth - 120)) + "px";
+  platformArr.splice(0, 0, platform);
+}
+```
+
+```
+//remove platforms
+function removePlat() {
+  platformArr.pop();
+  let platform = document.querySelector(".platformcontainer");
+  platform.removeChild(platform.lastElementChild);
+}
+```
+
 ## Determining If Player Landed
 
-## Animating Landing & Falling
+```
+if (
+    parseInt(character.style.top) ===
+    screenHeight - screenHeight / (numOfPlat + 1) - 92
+  ) {
+    if (
+      parseInt(character.style.left) >
+        parseInt(platformArr[6].style.left) - 92 &&
+      parseInt(character.style.left) < parseInt(platformArr[6].style.left) + 120
+    ) {
+      //if character survives
+      haveLanded = true;
+    }
+  }
+```
+
+## Falling Animation
+
+Similarly to the downward movement of the jump, the falling animation follows the same concept. This time, once the player falls below the screen, they will be removed and no longer visible.
+
+```
+const die = setInterval(() => {
+        charTop += 1;
+        character.style.top = String(charTop) + "px";
+        if (charTop > screenHeight) {
+          //remove character from screen
+          character.style.display = "none";
+          //remove the fall animation
+          clearInterval(die);
+        }
+      }, 1);
+```
+
+## Future Updates
+
+## Credits
