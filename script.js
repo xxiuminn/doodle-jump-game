@@ -128,7 +128,7 @@ function adjustScreen() {
   if (alive === true) {
     haveLanded = false;
     adjustingScreen = true;
-    console.log("screen adjusting");
+    //screen is adjusting
     const drop = setInterval((gravity) => {
       if (
         charTop < (screenHeight / (numOfPlat + 1)) * 7 - 92 &&
@@ -187,7 +187,6 @@ function landed() {
     ) {
       //if character survives
       haveLanded = true;
-      console.log(haveLanded);
     } else {
       //character dies
       alive = false;
@@ -199,7 +198,6 @@ function landed() {
       //character falls
       const die = setInterval(() => {
         charTop += 1;
-        console.log(charTop);
         character.style.top = String(charTop) + "px";
         if (charTop > screenHeight) {
           //remove character from screen
@@ -234,7 +232,6 @@ function pressPlay() {
   document.querySelector("div.start").remove();
 
   document.addEventListener("keydown", (event) => {
-    console.log("Event keydown");
     switch (event.key) {
       case "ArrowRight":
         keys.right = true;
@@ -246,10 +243,9 @@ function pressPlay() {
         keys.jump = true;
         break;
     }
-    console.log(keys);
 
     if (keys.right === true && keys.jump === true && keys.left === false) {
-      console.log("jump right");
+      //jump right
       moveRight();
       isJump();
     } else if (
@@ -257,7 +253,7 @@ function pressPlay() {
       keys.jump === true &&
       keys.left === true
     ) {
-      console.log("jump left");
+      //jump left
       moveLeft();
       isJump();
     } else if (
@@ -265,7 +261,7 @@ function pressPlay() {
       keys.jump === true &&
       keys.left === false
     ) {
-      console.log("jump only");
+      //jump only
       isJump();
     } else if (
       keys.right === false &&
@@ -346,7 +342,7 @@ function isJump() {
     return;
   } else {
     character.classList.add("isJumping");
-    console.log("is jumping");
+    //character is jumping
     charTop -= screenHeight / (numOfPlat + 1);
     character.style.top = String(charTop) + "px";
     adjustScreen();
