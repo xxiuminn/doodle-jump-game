@@ -12,7 +12,6 @@ Inspired by the classic Doodle Jump, this platformer game challenges players to 
 - HTML
 - CSS
 - Vanilla Javascript
-- _Bonus:_ 2 weeks of learning the languages mentioned above without any prior programming experience.
 
 ## Game Design
 
